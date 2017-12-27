@@ -327,6 +327,7 @@ function graph(){
 	}
 
 
+	//Heuristic used here in A* Algorithm is direct geometrical distance.
 	this.AstarAlgo = function( n1 , n2 ){
 		var pq = new MinHeapPriority;
 		n1.cost = 0;
@@ -547,7 +548,7 @@ function Auto (i,j , id){
 
 
 
-// Defining data structure for PRIORITY QUEUE (to be used in A star's Algo  Here, comparator for Nodes is cost.)
+// Defining data structure for PRIORITY QUEUE (to be used in A star's Algo.)  Here, comparator for Nodes is Priority of the node.
 
 function MinHeapPriority() {
   this.data = [];
@@ -612,7 +613,7 @@ function MinHeapPriority() {
 
 
 
-//Data structure implemented for Min Heap to be used in Dijkstra's Algo.
+//Data structure implemented for Min Heap to be used in Dijkstra's Algo. Comparator is node's cost.
 function MinHeap() {
   this.data = [];
 }
