@@ -49,10 +49,19 @@ function setup(){
 		}	
 	}
 
+
+	// 3 known initial people.
 	persons.push(new person(14,14,38,38,0));
 	persons.push(new person(2 , 2, 2,35,1));
 	persons.push(new person(15,26,48, 1,2));
 	
+	//insert n people randomly.
+	
+	// for (var i = 0; i < 10; i++) {
+	// 	pushperson();
+	// }
+
+
 	for (var i = 0; i < persons.length; i++) {
 		persons[i].callAuto1();
 	}
@@ -75,6 +84,7 @@ function pushperson(){
 			l = persons.length;
 			persons.push(new person(x,y,x2,y2,personCount));
 			console.log("New person :" + personCount);
+			console.log(persons[l]);
 			persons[l].callAuto1();
 			personCount++;
 		}
@@ -106,7 +116,7 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 		metros[i].show();
 	}
 
-	if(frameCount%500==0){								
+	if(frameCount%700==0){								
 		
 		if(random(1) < 0.99) pushperson();    // increase this probability to see more people turning up. 
 
