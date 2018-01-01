@@ -35,7 +35,7 @@ function setup(){
 
 
 	var count =0; 
-	for(var i = 0 ; i < 400 ; i++){
+	for(var i = 0 ; i < 250 ; i++){
 		
 		var x = floor(random(2,49))
 		var y = floor(random(2,49))
@@ -59,7 +59,7 @@ function setup(){
 	
 	//insert n people randomly.
 	
-	for (var i = 0; i < 200; i++) {
+	for (var i = 0; i < autos.length-100; i++) {
 		pushperson();
 	}
 
@@ -71,8 +71,11 @@ function setup(){
 	var t = createP("+/- keys for rate; UP for pause/resume, RIGHT for next frame");
   	t.position(width, 20);
 
+  	var t2 = createP("Number of autos: " + autos.length);
+  	t2.position(width,100);
 
-	setInterval(checkAuto, 10000);
+
+	setInterval(checkAuto, 2000);
 }
 
 var loops= true;
@@ -119,13 +122,17 @@ function pushperson(){
 
 
 function checkAuto(){
+	var unalottedpeople=0;
 	for (var i = 0; i < persons.length; i++) {
 		if(persons[i].journeyId==0 && !persons[i].alottedAuto){
+			unalottedpeople++;
 			persons[i].callAuto1();
 		}
 	}
+	console.log(unalottedpeople);
 }
 
+var minUnoccupied = 10000;
 function draw(){							// draw Everything: the Graph, edges, autos, their paths, metros, metroStations.
 	background(255);
 	g.show();
@@ -141,15 +148,31 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 		}
 	}
 
-	textSize(15);
-	text("rate : " + rate, width-80, 20);
-
 	
+
+	metroStations.show();
+
+	var unoccupiedcounter = 0;
 	for(var i = 0 ; i < autos.length ; i++){
 		autos[i].showPath();
 		autos[i].show();
+		if(!autos[i].occupied)
+			unoccupiedcounter++;
 	}
-	metroStations.show();
+	fill(100);
+	noStroke();
+	textSize(15);
+
+	if(unoccupiedcounter < minUnoccupied) minUnoccupied = unoccupiedcounter;
+	
+	 text("unoccu :" + unoccupiedcounter , width-100 , 60);
+	 text("minUnocc :" + minUnoccupied , width-100 , 80);
+
+
+	text("rate : " + rate, width-100, 20);
+	text("people : " + persons.length, width-100, 40);
+
+	
 
 	for(var i = 0 ; i < metros.length ; i++){
 		metros[i].show();
@@ -159,7 +182,7 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 		
 		   
 		if(random(1) < 0.6 && persons.length < 400){   // increase this probability to see more people turning up.
-		for (var i = 0; i < ceil(rate); i++) {
+		for (var i = 0; i < 2*ceil(rate); i++) {
 			pushperson();
 			}
 		}
@@ -188,6 +211,8 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 				}
 			}
 		}
+
+
 	}
 
 	for (var i = 0; i < persons.length; i++) {
@@ -550,9 +575,9 @@ function station(x,y){
 
 	this.show = function(){
 		noStroke();
-		fill(0);
+		fill(0,100);
 		ellipse(x,y,27,27);
-		fill(255,0,0);
+		fill(255,0,0,100);
 		rect(x,y,16,16);
 	}
 }
