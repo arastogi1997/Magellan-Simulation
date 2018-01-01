@@ -10,7 +10,7 @@ var stationLocations = [ [38,1], [31,4], [27,9], [22,13], [19,18], [15,21], [11,
 var rate = 1;
 
 function setup(){
-	createCanvas(1000, 1000);
+	createCanvas(1100, 1000);
 	g = new graph();
 	g.addEdges();
 	
@@ -35,7 +35,7 @@ function setup(){
 
 
 	var count =0; 
-	for(var i = 0 ; i < 550 ; i++){
+	for(var i = 0 ; i < 400 ; i++){
 		
 		var x = floor(random(2,49))
 		var y = floor(random(2,49))
@@ -68,8 +68,8 @@ function setup(){
 		persons[i].callAuto1();
 	}
 	
-	text = createP("+/- keys for rate; UP for pause, RIGHT for next frame");
-  	text.position(width, 20);
+	var t = createP("+/- keys for rate; UP for pause/resume, RIGHT for next frame");
+  	t.position(width, 20);
 
 
 	setInterval(checkAuto, 10000);
@@ -131,25 +131,19 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 	g.show();
 	// console.log(frameCount);
 
-
-	if(random(1) < 0.1 && persons.length < 400){
-		for (var i = 0; i < ceil(rate); i++) {
-			pushperson();
-		}
-	}
-		 // increase this probability to see more people turning up.
-
 	if(keyIsPressed){
 		if(key=='+'){
 			rate+=0.3;
-			console.log(ceil(rate));
 		}
 
 		if(key=='-'){
-			rate-=0.3;
-			console.log(ceil(rate));
+			if(rate>0.4)rate-=0.3;
 		}
 	}
+
+	textSize(15);
+	text("rate : " + rate, width-80, 20);
+
 	
 	for(var i = 0 ; i < autos.length ; i++){
 		autos[i].showPath();
@@ -164,7 +158,11 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 	if((frameCount%Math.floor(700/rate))==0){								
 		
 		   
-		
+		if(random(1) < 0.6 && persons.length < 400){   // increase this probability to see more people turning up.
+		for (var i = 0; i < ceil(rate); i++) {
+			pushperson();
+			}
+		}
 
 
 		for(var i = 0 ; i < metros.length ; i++){
@@ -622,8 +620,8 @@ function metroTrain(i , dir){
 		else ellipse(this.x+s,this.y , 9,9);
 
 
-		this.x+= (this.x2 - this.x)*0.005*rate;		
-		this.y+= (this.y2 - this.y)*0.005*rate;
+		this.x+= (this.x2 - this.x)*0.007*rate;		
+		this.y+= (this.y2 - this.y)*0.007*rate;
 
 	}
 
@@ -686,7 +684,7 @@ function Auto (i,j , id, debug=false){
 		//}
 		rect(this.x,this.y,6,6);
 
-		this.updation = floor(random(220,200)/(this.speed*rate*80));
+		this.updation = floor(220/(this.speed*rate*80));
 		if(frameCount%this.updation==0)
 			this.update();
 	}
