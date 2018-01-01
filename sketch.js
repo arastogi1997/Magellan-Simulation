@@ -690,6 +690,9 @@ function Auto (i,j , id, debug=false){
 
 	this.reachedDest = false;
 	this.occupied = false;
+
+	// this.stillOccupied = false; //  for debugging
+	this.person = null;			//  for debugging
 	this.log = ()=>{};
 	if(debug)this.log = console.log;
 
@@ -699,8 +702,25 @@ function Auto (i,j , id, debug=false){
 		this.i = Math.min(ceil(this.x/20), 48);
 		this.j = Math.min(ceil(this.y/20), 48);
 		// this.log(this.id + ':Auto >> show')
+		
+		// if(this.occupied && this.reachedDest && this.stillOccupied){ //  for debugging
+		// 	this.highlight();
+		// 	this.person.highlight();
+		// 	var auto = this;
+		// 	setTimeout(()=>{
+		// 		console.log(auto);
+		// 		debugger;
+		// 	}, 50);
+
+		// }
+		// else if(this.occupied && this.reachedDest){ //  for debugging
+		// 	this.stillOccupied =true;
+		// }
+
+
 		fill(0);
-		stroke(255,0,0);
+		var color = this.occupied?'#00f':'#f00';
+		stroke(color);
 		//if(this.cur  < this.path.length-1){
 		if(this.path.length>0){
 		this.x+=(this.path[this.cur].x - this.x)*this.speed*rate;
@@ -712,6 +732,11 @@ function Auto (i,j , id, debug=false){
 		this.updation = floor(220/(this.speed*rate*80));
 		if(frameCount%this.updation==0)
 			this.update();
+	}
+	
+	this.highlight = function(){ //  for debugging
+		stroke('#093');
+		ellipse(this.x, this.y, 30, 30);
 	}
 
 
@@ -796,6 +821,8 @@ function person(i,j,i2,j2, id, debug=false){
 
 	this.x = this.i*20;
 	this.y = this.j*20;
+
+	this.activityLog;
 	this.log = ()=>{};
 	if(debug)this.log = console.log;
 
@@ -815,6 +842,7 @@ function person(i,j,i2,j2, id, debug=false){
 				
 				// console.log("Auto " + this.alottedAuto.id + " Reached dest");
 				this.alottedAuto.occupied=false;
+				// this.alottedAuto.stillOccupied=false;
 				this.alottedAuto = null;
 				this.seatedAuto = false;
 				
@@ -851,6 +879,7 @@ function person(i,j,i2,j2, id, debug=false){
 			if(this.alottedAuto.reachedDest){
 				this.seatedAuto = true;
 				this.alottedAuto.occupied=true;
+				// this.alottedAuto.stillOccupied=false;
 				// console.log("person " + this.id + ": Hi Auto " + this.alottedAuto.id);
 				
 				if(this.journeyId == 0){
@@ -886,6 +915,11 @@ function person(i,j,i2,j2, id, debug=false){
 		this.waitingAtStation = false;
 	}
 
+	this.highlight =  () => {
+		stroke('#093');
+		ellipse(this.x, this.y, 10, 10);
+	}
+
 	this.getState = function(){
 		this.log(this.id , ':Person >> getState');
 		return {
@@ -902,7 +936,7 @@ function person(i,j,i2,j2, id, debug=false){
 	}
 
 	this.callAuto1 = function(){
-
+		if(this.alottedAuto)return;
 		this.log(this.id , ':Person >> callAuto1, journeyId', this.journeyId);
 		min = 1000000;
 		var z = -1;
@@ -920,6 +954,7 @@ function person(i,j,i2,j2, id, debug=false){
 			this.log(this.id,':Person >> call auto', this.i, this.j, this.x, this.y);
 			autos[z].setDestination(this.i,this.j);
 			autos[z].occupied=true;
+			autos[z].person = this;
 		}
 		else console.log("person " + this.id + ": Couldn't find auto within 10 blocks")
 		return z;
