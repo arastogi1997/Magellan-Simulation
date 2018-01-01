@@ -35,7 +35,7 @@ function setup(){
 
 
 	var count =0; 
-	for(var i = 0 ; i < 150 ; i++){
+	for(var i = 0 ; i < 550 ; i++){
 		
 		var x = floor(random(2,49))
 		var y = floor(random(2,49))
@@ -59,17 +59,41 @@ function setup(){
 	
 	//insert n people randomly.
 	
-	// for (var i = 0; i < 10; i++) {
-	// 	pushperson();
-	// }
+	for (var i = 0; i < 200; i++) {
+		pushperson();
+	}
 
 
 	for (var i = 0; i < persons.length; i++) {
 		persons[i].callAuto1();
 	}
 	
-	
-	setInterval(checkAuto, 30000);
+	text = createP("+/- keys for rate; UP for pause, RIGHT for next frame");
+  	text.position(width, 20);
+
+
+	setInterval(checkAuto, 10000);
+}
+
+var loops= true;
+
+function keyPressed(){
+	if(keyCode == UP_ARROW){
+		if(loops){
+			noLoop();
+			loops=!loops;
+			console.log("PAUSE");
+		}
+		else{
+			loop();
+			loops=!loops;
+			console.log("resume");
+		}
+	}
+
+	if(keyCode == RIGHT_ARROW)
+		redraw();
+
 }
 
 var personCount = 3;
@@ -106,7 +130,26 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 	background(255);
 	g.show();
 	// console.log(frameCount);
-	
+
+
+	if(random(1) < 0.1 && persons.length < 400){
+		for (var i = 0; i < ceil(rate); i++) {
+			pushperson();
+		}
+	}
+		 // increase this probability to see more people turning up.
+
+	if(keyIsPressed){
+		if(key=='+'){
+			rate+=0.3;
+			console.log(ceil(rate));
+		}
+
+		if(key=='-'){
+			rate-=0.3;
+			console.log(ceil(rate));
+		}
+	}
 	
 	for(var i = 0 ; i < autos.length ; i++){
 		autos[i].showPath();
@@ -120,8 +163,8 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 
 	if((frameCount%Math.floor(700/rate))==0){								
 		
-		while(random(1) < 0.65 && persons.length < 500) pushperson();    // increase this probability to see more people turning up. 
-
+		   
+		
 
 
 		for(var i = 0 ; i < metros.length ; i++){
@@ -486,10 +529,10 @@ function graph(debug=false){
 
 		}
 
-		this.log('*************** no Path! ******************');
-		debugger;
-		throw new Error('no path');
-		return null;
+		// this.log('*************** no Path! ******************');
+		// debugger;
+		// throw new Error('no path');
+		return [];
 		
 	}
 
@@ -619,8 +662,8 @@ function Auto (i,j , id, debug=false){
 	this.cur = 1;
 	//this.moveRandomly = false;
 																	// Normal speed:  0.005 - 0.1.  ;  currently sped up.
-	this.speed = random(0.05, 0.03)*rate;							//updationSpeed parameter depends on speed, dictates frame at which updated.
-	this.updation = floor(random(120,200)/(this.speed*80));		// speed inverse relation. 
+	this.speed = random(0.03, 0.01);							//updationSpeed parameter depends on speed, dictates frame at which updated.
+	this.updation = floor(random(220,200)/(this.speed*80));		// speed inverse relation. 
 
 	this.reachedDest = false;
 	this.occupied = false;
@@ -637,12 +680,13 @@ function Auto (i,j , id, debug=false){
 		stroke(255,0,0);
 		//if(this.cur  < this.path.length-1){
 		if(this.path.length>0){
-		this.x+=(this.path[this.cur].x - this.x)*this.speed;
-		this.y+=(this.path[this.cur].y - this.y)*this.speed;
+		this.x+=(this.path[this.cur].x - this.x)*this.speed*rate;
+		this.y+=(this.path[this.cur].y - this.y)*this.speed*rate;
 		}
 		//}
 		rect(this.x,this.y,6,6);
 
+		this.updation = floor(random(220,200)/(this.speed*rate*80));
 		if(frameCount%this.updation==0)
 			this.update();
 	}
@@ -757,7 +801,7 @@ function person(i,j,i2,j2, id, debug=false){
 				}
 
 				if(this.journeyId == 4){
-					console.log("person " +this.id + " completed full journey", persons);
+					console.log("person " +this.id + " completed full journey");
 					var index = getIndex(persons, this.id);
 					// console.log(index);
 
