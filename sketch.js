@@ -7,7 +7,7 @@ var autos = [];
 var persons = [];
 var s = 5;
 var stationLocations = [ [38,1], [31,4], [27,9], [22,13], [19,18], [15,21], [11,26], [10,31], [15,35], [25,38]]; 
-var rate = 1;
+var rate = 5;
 
 function setup(){
 	createCanvas(1100, 1000);
@@ -178,15 +178,16 @@ function draw(){							// draw Everything: the Graph, edges, autos, their paths,
 		metros[i].show();
 	}
 
-	if((frameCount%Math.floor(700/rate))==0){								
+	if((frameCount%Math.floor(900/rate))==0){								
 		
 		   
-		if(random(1) < 0.6 && persons.length < 400){   // increase this probability to see more people turning up.
-		for (var i = 0; i < 2*ceil(rate); i++) {
+		if(random(1) < 0.5 && persons.length < autos.length+200){   // increase this probability to see more people turning up.
+		for (var i = 0; i < 2*ceil(Math.sqrt(rate)); i++) {
 			pushperson();
 			}
 		}
 
+		if(rate<20){var c=10; while(c-->0)pushperson();  }
 
 		for(var i = 0 ; i < metros.length ; i++){
 		metros[i].update();
@@ -575,9 +576,9 @@ function station(x,y){
 
 	this.show = function(){
 		noStroke();
-		fill(0,100);
+		fill(0);
 		ellipse(x,y,27,27);
-		fill(255,0,0,100);
+		fill(255,0,0);
 		rect(x,y,16,16);
 	}
 }
@@ -685,7 +686,7 @@ function Auto (i,j , id, debug=false){
 	this.cur = 1;
 	//this.moveRandomly = false;
 																	// Normal speed:  0.005 - 0.1.  ;  currently sped up.
-	this.speed = random(0.03, 0.01);							//updationSpeed parameter depends on speed, dictates frame at which updated.
+	this.speed = random(0.005, 0.01);							//updationSpeed parameter depends on speed, dictates frame at which updated.
 	this.updation = floor(random(220,200)/(this.speed*80));		// speed inverse relation. 
 
 	this.reachedDest = false;
@@ -719,7 +720,7 @@ function Auto (i,j , id, debug=false){
 
 
 		fill(0);
-		var color = this.occupied?'#00f':'#f00';
+		var color = this.occupied?'#f00':'#009999';
 		stroke(color);
 		//if(this.cur  < this.path.length-1){
 		if(this.path.length>0){
@@ -729,7 +730,7 @@ function Auto (i,j , id, debug=false){
 		//}
 		rect(this.x,this.y,6,6);
 
-		this.updation = floor(220/(this.speed*rate*80));
+		this.updation = floor(2.4/(this.speed*rate));
 		if(frameCount%this.updation==0)
 			this.update();
 	}
